@@ -90,6 +90,55 @@ size_t Inventory::getCount() const {
  * @return The item at the specified row and column.
  * @throws std::out_of_range If the row or column is out of bounds.
  */
-Item Inventory::at (const size_t& row, const size_t& col) const {
+Item Inventory::at(const size_t& row, const size_t& col) const {
+    if (row >= inventory_grid_.size() || col >= inventory_grid_[row].size()){
+        throw std::out_of_range("Input out of bounds");
+    }
+    return inventory_grid_[row][col];
+}
+
+/**
+ * @brief Stores an item at the specified row and column in the inventory grid.
+ *
+ * @param row A size_t parameter for the row index in the inventory grid.
+ * @param col  A size_t parameter for the column index in the inventory grid.
+ * @param pickup A const ref. to the item to store at the specified location.
+ * @return True if the item was successfully stored, false if the cell is already occupied.
+ * 
+ * @post Updates `item_count_` and `weight_` if the Item is sucessfully added
+ * @throws std::out_of_range If the row or column is out of bounds.
+ */
+bool Inventory::store(const size_t& row, const size_t& col, const Item& pickup){
+    if ( row >= inventory_grid_.size() || col >= inventory_grid_[row].size()){
+        throw std::out_of_range("Input out of Range");
+    }else if( inventory_grid_[row][col].type_ != NONE){
+        return false;
+    }
+    inventory_grid_[row][col] = pickup;
+    item_count_++;
+    weight_+= pickup.weight_;
+    return true;
+}
+
+/**
+ * @brief Destructor for the Inventory class.
+ * @post Deallocates any dynamically allocated resources.
+ */
+Inventory::~Inventory(){
+    if (equipped_ != nullptr){
+    delete equipped_;
+    }
+}
+
+// Big Five
+
+/**
+ * @brief Copy constructor for the Inventory class.
+ * @param rhs A const l-value ref. to the Inventory object to copy.
+ * @post Creates a deep copy of `rhs`, 
+ *  including duplicating the dynamically 
+ *  allocated item in `equipped`.
+ */
+Inventory::Inventory(const Inventory& rhs){
 
 }

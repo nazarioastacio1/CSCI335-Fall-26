@@ -150,7 +150,9 @@ Inventory::Inventory(const Inventory& rhs) : inventory_grid_{rhs.inventory_grid_
  */
 Inventory::Inventory(Inventory&& rhs) : inventory_grid_{std::move(rhs.inventory_grid_)}, weight_{rhs.weight_}, item_count_{rhs.item_count_}{
         equipped_ = rhs.equipped_;
-        rhs.equipped_ = nullptr; // we must set it to empty, otherwise would cause a memory leak
+        rhs.equipped_ = nullptr;  // we must set it to empty, otherwis would cause a memory leak
+        rhs.weight_ = 0;
+        rhs.item_count_ = 0;
 }
 
 /**
@@ -210,6 +212,8 @@ Inventory& Inventory::operator=(Inventory&& rhs){
     inventory_grid_ = std::move(rhs.inventory_grid_);
     equipped_ = rhs.equipped_;
     rhs.equipped_ = nullptr;
+    rhs.weight_ = 0;
+    rhs.item_count_ = 0;
 
     return *this;
 }

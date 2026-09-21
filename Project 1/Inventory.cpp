@@ -120,16 +120,6 @@ bool Inventory::store(const size_t& row, const size_t& col, const Item& pickup){
     return true;
 }
 
-/**
- * @brief Destructor for the Inventory class.
- * @post Deallocates any dynamically allocated resources.
- */
-Inventory::~Inventory(){
-    if (equipped_ != nullptr){
-    delete equipped_;
-    }
-}
-
 // Big Five
 
 /**
@@ -139,6 +129,97 @@ Inventory::~Inventory(){
  *  including duplicating the dynamically 
  *  allocated item in `equipped`.
  */
-Inventory::Inventory(const Inventory& rhs){
+Inventory::Inventory(const Inventory& rhs) : inventory_grid_{rhs.inventory_grid_}, weight_{rhs.weight_}, item_count_{rhs.item_count_}{
+    if (rhs.equipped_ != nullptr){
+        equipped_= new Item(*rhs.equipped_);
+    }else{
+        equipped_= nullptr;
+    }
+}
 
+/**
+ * @brief Move constructor for the Inventory class.
+ * @param rhs An r-value ref. to the Inventory object to move from.
+ * @post Transfers ownership of resources from `rhs` 
+ * to the newly constructed Inventory object. 
+ * 
+ * Sets `rhs` to a valid but empty state.
+ * - All pointers are set to nullptr
+ * - All numerical values are set to 0
+ * - All containers are cleared to have size 0
+ */
+Inventory::Inventory(Inventory&& rhs) : inventory_grid_{std::move(rhs.inventory_grid_)}, weight_{rhs.weight_}, item_count_{rhs.item_count_}{
+        equipped_ = rhs.equipped_;
+        rhs.equipped_ = nullptr; // we must set it to empty, otherwise would cause a memory leak
+}
+
+/**
+ * @brief Copy assignment operator for the Inventory class.
+ * @param rhs A const l-value ref. to the Inventory object to copy.
+ * @return A reference to the updated Inventory object.
+ * @post Performs a deep copy of `rhs`, including 
+ * re-allocating and copying the item in `equipped`.
+ * 
+ * NOTE: The resources of the overridden object
+ * should be destroyed.
+ */
+Inventory& Inventory::operator=(const Inventory& rhs){
+    if(this == &rhs){
+        return *this;
+    }
+    if (equipped_ != nullptr){
+        delete equipped_;
+    }
+    item_count_ = rhs.item_count_;
+    weight_ = rhs.weight_;
+    inventory_grid_ = rhs.inventory_grid_;
+
+    if(rhs.equipped_ != nullptr){
+        equipped_ = new Item(*rhs.equipped_);
+    }else{
+        equipped_ = nullptr;
+    }
+
+    return *this;
+}
+
+/**
+ * @brief Move assignment operator for the Inventory class.
+ * @param rhs An r-value ref. to the Inventory object to move from.
+ * @return A reference to the updated Inventory object.
+ * @post Transfers ownership of resources from `rhs` 
+ * to the newly constructed Inventory object. 
+ * 
+ * Sets `rhs` to a valid but empty state.
+ * - All pointers are set to nullptr
+ * - All numerical values are set to 0
+ * - All containers are cleared to have size 0
+ * 
+ * NOTE: The resources of the overridden object
+ * should be destroyed.
+ */
+Inventory& Inventory::operator=(Inventory&& rhs){
+    if(this == &rhs){
+        return *this;
+    }
+    if(equipped_ != nullptr){
+        delete equipped_;
+    }
+    weight_ = rhs.weight_;
+    item_count_ = rhs.item_count_;
+    inventory_grid_ = std::move(rhs.inventory_grid_);
+    equipped_ = rhs.equipped_;
+    rhs.equipped_ = nullptr;
+
+    return *this;
+}
+
+/**
+ * @brief Destructor for the Inventory class.
+ * @post Deallocates any dynamically allocated resources.
+ */
+Inventory::~Inventory(){
+    if(equipped_ != nullptr){
+        delete equipped_;
+    }
 }

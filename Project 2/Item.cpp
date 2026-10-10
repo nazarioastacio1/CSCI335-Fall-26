@@ -57,3 +57,18 @@ size_t std::hash<Item>::operator()(const Item& i) const
 {
     return std::hash<std::string> {}(i.name_);
 }
+
+template <>
+struct std::hash<Item> {
+
+/**
+ * @brief Computes a hash value for an Item based on
+ * using the standard hash for strings on the Item's name
+ *
+ * @param i The Item to hash
+ * @return Hash value for the Item
+ */
+    size_t operator()(const Item& i) const{
+        return std::hash<std::string>{}(i.name_);
+    }
+};

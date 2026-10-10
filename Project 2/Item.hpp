@@ -69,3 +69,9 @@ struct std::hash<Item> {
      */
     size_t operator()(const Item& i) const;
 };
+
+
+
+template<>
+struct std::hash<Item>
+size_t operator()(const Item& i) const;
